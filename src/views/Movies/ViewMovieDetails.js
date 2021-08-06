@@ -118,7 +118,6 @@ class ViewMovieDetails extends React.Component {
             "bookingStart": this.state.fromDate,
             "userId": this.props.user.id
         };
-        console.log(reserveDetails)
 
         this.props.reserveBook(reserveDetails);
     };
@@ -228,7 +227,7 @@ class ViewMovieDetails extends React.Component {
                                     </Space>
                                 </div>
                                 <Divider/>
-                                <Title level={3}>Description <span style={{color: 'grey'}}>Reviews (7)</span></Title>
+                                <Title level={3}>Description <span style={{color: 'grey'}}>Reviews ({this.props.comments.length})</span></Title>
                                 <Divider/>
                                 <Comment
                                     avatar={

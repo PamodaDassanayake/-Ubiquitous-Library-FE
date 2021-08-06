@@ -41,8 +41,6 @@ class Login extends React.Component {
 
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.props.account_type !== nextProps.account_type) {
-            console.log('login success');
-            console.log(this.props.account_type)
             // eslint-disable-next-line no-unused-expressions
             this.props.account_type === 'admin' ? this.props.history.push('/dashboard') : (this.props.account_type === 'user') ? this.props.history.push('/dashboard') : (this.props.account_type === null) ? message.error('Invalid username or password') && this.setState({
                 loading: false

@@ -3,7 +3,7 @@ import {Breadcrumb, Card, Col, Empty, Image, Row, Typography} from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
 
-const {Text, Title} = Typography;
+const {Text} = Typography;
 
 class Movies extends React.Component {
 

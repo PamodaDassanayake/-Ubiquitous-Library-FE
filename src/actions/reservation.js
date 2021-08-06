@@ -61,24 +61,51 @@ export const reserveBook = (data) => {
     }
 }
 
-export const getAllUserReservations = () => {
+export const getAllBookReservations = () => {
     return dispatch => {
-        let url = server_ip + `/allUserReservations`;
+        let url = server_ip + api+ `/library/admin/reserved/books`;
         axios
-            .get(url)
+            .get(url, {
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
             .then(response => {
                 console.log(response.data);
                 dispatch(
                     {
-                        type: actionTypes.GET_RESERVATIONS_LIST,
-                        reservationList: response.data
+                        type: actionTypes.GET_ALL_BOOK_RESERVATIONS_LIST,
+                        bookReservationList: response.data
                     }
                 );
             }).catch(error => {
             console.log(error);
         });
     }
-}
+};
+
+export const getAllVideoReservations = () => {
+    return dispatch => {
+        let url = server_ip + api+ `/library/admin/reserved/videos`;
+        axios
+            .get(url, {
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                console.log(response.data);
+                dispatch(
+                    {
+                        type: actionTypes.GET_ALL_MOVIE_RESERVATIONS_LIST,
+                        videoReservationList: response.data
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};
 
 export const getBooksReservationsByUser = () => {
     return dispatch => {

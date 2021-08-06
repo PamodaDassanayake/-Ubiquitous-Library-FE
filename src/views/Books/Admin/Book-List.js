@@ -20,7 +20,7 @@ class BookList extends React.Component {
     };
 
     editDetails = (id) => {
-        this.props.history.push(`/admin/editBookDetails/${id}`);
+        this.props.history.push(`/dashboard/admin/editBookDetails/${id}`);
     };
 
     columns = [
@@ -76,7 +76,6 @@ class BookList extends React.Component {
             this.data = [];
             // eslint-disable-next-line no-unused-expressions
             this.props.booksList.length > 0 ?
-
                 this.props.booksList.map((row, index) => {
                     const book = {
                         "key": index + 1,

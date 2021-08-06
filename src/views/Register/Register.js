@@ -1,6 +1,21 @@
 import React from 'react';
-import {Form, Input, Button, Row, Col, Card, Typography, Badge, Divider, Spin, message, Modal, Empty} from 'antd';
-import {LockFilled, MailFilled, UserAddOutlined, CheckCircleTwoTone} from "@ant-design/icons";
+import {
+    Form,
+    Input,
+    Button,
+    Row,
+    Col,
+    Card,
+    Typography,
+    Badge,
+    Divider,
+    Spin,
+    message,
+    Modal,
+    Empty,
+    Image
+} from 'antd';
+import {LockFilled, MailFilled, UserAddOutlined, CheckCircleTwoTone, UploadOutlined} from "@ant-design/icons";
 import {connect} from "react-redux";
 
 import * as actions from "../../actions";
@@ -17,7 +32,10 @@ class Register extends React.Component {
             pricePlan: '',
             colorCode: '',
             submitted: false,
-            isWelcomeModalVisible: false
+            visibleUploadModal: false,
+            isWelcomeModalVisible: false,
+            imageUploaded: false,
+            imageLink: ''
         }
     };
 
@@ -29,7 +47,6 @@ class Register extends React.Component {
         this.setState({
             submitted: true
         });
-        console.log(values);
 
         const userData = {
             "activated": true,
@@ -45,7 +62,7 @@ class Register extends React.Component {
             "login": values.login,
             "password": values.password
         };
-        console.log(this.state.pricePlan.type)
+
         this.props.registerUser(this.state.pricePlan.type, userData);
 
     };
@@ -97,20 +114,50 @@ class Register extends React.Component {
         this.props.history.push('/login');
     };
 
-    applyPlanColor=(plan)=>{
-            switch (plan){
-                case "Platinum":
-                    return "#FF5733";
-                case "Gold":
-                    return "#DAA520";
-                case "Silver":
-                    return "#C0C0C0";
-                case "Bronze":
-                    return "#cd7f32";
-            }
+    applyPlanColor = (plan) => {
+        switch (plan) {
+            case "Platinum":
+                return "#FF5733";
+            case "Gold":
+                return "#DAA520";
+            case "Silver":
+                return "#C0C0C0";
+            case "Bronze":
+                return "#cd7f32";
+        }
+    };
+
+    uploadImage = () => {
+        this.setState({
+            imageUploaded: false,
+            visibleUploadModal: true
+        });
+    };
+
+
+    handleOk = () => {
+        this.setState({
+            imageUploaded: true,
+            visibleUploadModal: false
+        });
+    };
+
+    handleCancel = () => {
+        this.setState({
+            visibleUploadModal: false
+        });
     };
 
     render() {
+        const {visibleUploadModal, imageLink, imageUploaded} = this.state;
+
+        const imageUploadModal = [
+            <Modal title="Uploader" visible={visibleUploadModal} onOk={this.handleOk} onCancel={this.handleCancel}>
+                <Text>Image Link</Text>
+                <Input.TextArea onChange={this.getImageLink}/>
+            </Modal>
+        ];
+
         const customerPlan = [
             <Row className="register-row" type="flex" justify="space-around" align="middle">
                 <Col span="16" style={{marginTop: '10%'}}>
@@ -123,7 +170,8 @@ class Register extends React.Component {
                                     this.props.memberships.length > 0 ?
                                         this.props.memberships.map((row, index) => (
                                             <Col span={6}>
-                                                <Badge.Ribbon text={row.type + ' Plan'} placement='start' color={this.applyPlanColor(row.type)}>
+                                                <Badge.Ribbon text={row.type + ' Plan'} placement='start'
+                                                              color={this.applyPlanColor(row.type)}>
                                                     <Card bordered hoverable>
                                                         <Divider/>
                                                         <p style={{
@@ -134,8 +182,10 @@ class Register extends React.Component {
                                                         <p style={{color: 'gray'}}>per year</p>
                                                         <h4>{row.booksPerUser} Books per user</h4>
                                                         <h4>{row.videosPerUser} Videos per user</h4>
-                                                        <h4>{row.bookLendingDurationDays} days Book lending duration</h4>
-                                                        <h4>{row.videoLendingDurationDays} days Video lending duration</h4>
+                                                        <h4>{row.bookLendingDurationDays} days Book lending
+                                                            duration</h4>
+                                                        <h4>{row.videoLendingDurationDays} days Video lending
+                                                            duration</h4>
                                                         <Button type='primary' danger
                                                                 onClick={() => this.choosePricingPlan(row, this.applyPlanColor(row.type))}>GET
                                                             NOW</Button>
@@ -165,12 +215,18 @@ class Register extends React.Component {
                                                   style={{width: 'fit-content', margin: 'auto'}}>
                                         <Card bordered hoverable style={{width: 'fit-content', margin: 'auto'}}>
                                             <Divider/>
-                                            <p style={{fontSize: '30px', fontWeight: 'bold', margin: '0'}}>Rs.{this.state.pricePlan.annualFee}</p>
+                                            <p style={{
+                                                fontSize: '30px',
+                                                fontWeight: 'bold',
+                                                margin: '0'
+                                            }}>Rs.{this.state.pricePlan.annualFee}</p>
                                             <p style={{color: 'gray'}}>per year</p>
                                             <h4>{this.state.pricePlan.booksPerUser} Books per user</h4>
                                             <h4>{this.state.pricePlan.videosPerUser} Videos per user</h4>
-                                            <h4>{this.state.pricePlan.bookLendingDurationDays} days Book lending duration</h4>
-                                            <h4>{this.state.pricePlan.videoLendingDurationDays} days Video lending duration</h4>
+                                            <h4>{this.state.pricePlan.bookLendingDurationDays} days Book lending
+                                                duration</h4>
+                                            <h4>{this.state.pricePlan.videoLendingDurationDays} days Video lending
+                                                duration</h4>
                                             <a style={{color: '#01c097'}} onClick={this.changePricePlan}>Change</a>
                                         </Card>
                                     </Badge.Ribbon>
@@ -180,6 +236,21 @@ class Register extends React.Component {
                                  style={{backgroundColor: '#ffffff', padding: '50px', paddingTop: '100px'}}>
 
                                 <Form layout="horizontal" className="register-form" onFinish={this.handleSubmit}>
+                                    {/*<Form.Item*/}
+                                    {/*    name='image'*/}
+                                    {/*>*/}
+                                    {/*    <Button type="dashed" shape="round" icon={<UploadOutlined/>}*/}
+                                    {/*            onClick={this.uploadImage}>Upload Image</Button>*/}
+                                    {/*    {imageUploadModal}*/}
+                                    {/*    {imageUploaded != '' ?*/}
+                                    {/*        (<div style={{marginTop: '10px'}}>*/}
+                                    {/*            <Image*/}
+                                    {/*                width={150}*/}
+                                    {/*                src={imageLink}/>*/}
+                                    {/*        </div>)*/}
+                                    {/*        : null*/}
+                                    {/*    }*/}
+                                    {/*</Form.Item>*/}
                                     <Form.Item
                                         name='login'
                                         rules={[{

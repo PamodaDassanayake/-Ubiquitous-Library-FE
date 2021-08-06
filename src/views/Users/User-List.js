@@ -38,16 +38,6 @@ class UserList extends React.Component {
             key: 'email',
         },
         {
-            title: 'Created Date',
-            dataIndex: 'createdDate',
-            key: 'createdDate',
-        },
-        {
-            title: 'Created By',
-            dataIndex: 'createdBy',
-            key: 'createdBy',
-        },
-        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -68,15 +58,12 @@ class UserList extends React.Component {
             // eslint-disable-next-line no-unused-expressions
             this.props.usersList.length > 0 ?
                 this.props.usersList.map((row, index) => {
-                    console.log(row.activated)
                     const user = {
                         "key": index + 1,
                         "id": index + 1,
                         "firstname":row.firstName,
                         "lastname": row.lastName,
                         "email": row.email,
-                        "createdDate": row.createdDate,
-                        "createdBy": row.createdBy,
                         "status": row.activated,
                         "image": row.imageUrl
                     };

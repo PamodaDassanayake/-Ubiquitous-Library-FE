@@ -115,6 +115,11 @@ class ViewBookDetails extends React.Component {
             "book": bookDetails.id
         };
 
+        if (this.state.fromDate === '' || this.state.toDate === ''){
+            message.error("Please set From date and To date!");
+            return;
+        }
+
         this.props.chekBookAvailability(data);
     };
 
@@ -130,7 +135,6 @@ class ViewBookDetails extends React.Component {
             "userId": this.props.user.id
         };
 
-        console.log(reserveDetails)
 
         this.props.reserveBook(reserveDetails);
     };
@@ -188,16 +192,13 @@ class ViewBookDetails extends React.Component {
     };
 
     submitPayment = () => {
-        this.setState({
-            formSubmitted: false
-        });
         this.props.settlePayment(this.props.reserveFee.id, this.props.reserveFee.fee);
     };
 
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.props.bookAvailability !== nextProps.bookAvailability) {
             // eslint-disable-next-line no-unused-expressions
-            this.props.bookAvailability !== null && this.props.bookAvailability.availableQty === 0 ?
+            this.props.bookAvailability !== null && this.props.bookAvailability.availableQty > 0 ?
                 message.success('Book is available') && this.setState({
                     availability: true
                 })
@@ -329,9 +330,11 @@ class ViewBookDetails extends React.Component {
                     (
                         <Modal
                             title="Modal"
+                            width={600}
                             visible={this.state.paymentModalVisible}
-                            onOk={this.hideModal}
-                            onCancel={this.hideModal}
+
+                            okButtonProps={{hidden: true}}
+                            cancelButtonProps={{hidden: this.state.current !== 0}}
                         >
                             <Form
                                 initialValues={{remember: true}}
@@ -373,15 +376,19 @@ class ViewBookDetails extends React.Component {
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType="submit" className="login-form-button">
-                                        PAY RS. {this.props.reserveFee.fee}.00
+                                        {/*PAY RS. {this.props.reserveFee.fee}.00*/}
                                     </Button>
                                 </Form.Item>
                             </Form>
                         </Modal>
                     )
                 }
-                {/*{formSubmitted && this.props.reserveBookSuccess && message.success('Book has been reserved successfully!')}*/}
-                {/*{formSubmitted && this.props.reserveBookError && message.error('Failed to reserved book!')}*/}
+                {formSubmitted && this.props.paymentSuccess && message.success('Book has been reserved successfully!') &&  this.setState({
+                    formSubmitted: false
+                })}
+                {formSubmitted && this.props.paymentError && message.error('Failed to reserved book!') &&  this.setState({
+                    formSubmitted: false
+                })}
             </>
         );
     }

@@ -22,8 +22,7 @@ import EditMovieDetails from "../Movies/Admin/EditMovieDetails";
 import ViewMovieDetails from "../Movies/ViewMovieDetails";
 import UserList from "../Users/User-List";
 import UserReservations from "../Reservations/Admin/User-Reservations";
-import Login from "../Login/Login";
-import Register from "../Register/Register";
+import UserProfile from "../Users/User-Profile";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -40,7 +39,6 @@ class Dashboard extends React.Component {
     };
 
     onCollapse = collapsed => {
-        console.log(collapsed);
         this.setState({collapsed});
     };
 
@@ -51,7 +49,14 @@ class Dashboard extends React.Component {
             content: '',
             onOk() {
                 return new Promise((resolve, reject) => {
-                    this.props.signOutSystem();
+                    setTimeout(
+                        function () {
+                            this.props.signOutSystem();
+                            this.props.history.push('/');
+                        }
+                            .bind(this),
+                        2000
+                    );
                 }).catch(() => console.log('Oops errors!'));
             },
             onCancel() {
@@ -117,17 +122,20 @@ class Dashboard extends React.Component {
                                     <Link to='/reservations'/>
                                     Reservations
                                 </Menu.Item>}
-                                {/*<Menu.Item key="4" icon={<UserOutlined/>}>*/}
-                                {/*    Profile*/}
-                                {/*</Menu.Item>*/}
                             </>)
                         }
 
                         {
                             this.props.account_type !== '' &&
-                            <Menu.Item key="7" icon={<LoginOutlined/>} onClick={this.props.signOutSystem}>
-                                Sign Out
-                            </Menu.Item>
+                           <>
+                               <Menu.Item key="4" icon={<UserOutlined/>}>
+                                   <Link to='/profile'/>
+                                   Profile
+                               </Menu.Item>
+                               <Menu.Item key="7" icon={<LoginOutlined/>} onClick={() => this.props.signOutSystem()}>
+                                   Sign Out
+                               </Menu.Item>
+                           </>
                         }
                         {
                             this.props.account_type === '' &&
@@ -149,16 +157,20 @@ class Dashboard extends React.Component {
                                 <Route exact path='/dashboard/movies' component={Movies}/>
                                 <Route exact path='/dashboard/movieInfo/:movieId' component={ViewMovieDetails}/>
                                 <Route exact path='/reservations' component={Reservations}/>
+                                <Route exact path='/profile' component={UserProfile}/>
 
                                 {/*admin routes*/}
                                 <Route path='/dashboard/admin/add-new-book' component={AddBook}/>
                                 <Route exact path='/dashboard/admin/book-list' component={BookList}/>
-                                <Route exact path='/dashboard/admin/editBookDetails/:bookId' component={EditBookDetails}/>
+                                <Route exact path='/dashboard/admin/editBookDetails/:bookId'
+                                       component={EditBookDetails}/>
                                 <Route exact path='/dashboard/admin/add-new-movie' component={AddMovie}/>
                                 <Route exact path='/dashboard/admin/movie-list' component={MovieList}/>
-                                <Route exact path='/dashboard/admin/editMovieDetails/:movieId' component={EditMovieDetails}/>
+                                <Route exact path='/dashboard/admin/editMovieDetails/:movieId'
+                                       component={EditMovieDetails}/>
                                 <Route exact path='/dashboard/admin/user-list' component={UserList}/>
-                                <Route exact path='/dashboard/admin/user-reservation-list' component={UserReservations}/>
+                                <Route exact path='/dashboard/admin/user-reservation-list'
+                                       component={UserReservations}/>
                                 {
                                     this.props.account_type === 'admin' ?
                                         <Redirect to='/dashboard/admin/book-list'/> : <Redirect to='/dashboard/books'/>

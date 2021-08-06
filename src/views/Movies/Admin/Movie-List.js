@@ -12,7 +12,7 @@ class MovieList extends React.Component {
 
 
     editDetails = (id) => {
-        this.props.history.push(`/admin/editMovieDetails/${id}`);
+        this.props.history.push(`/dashboard/admin/editMovieDetails/${id}`);
     };
 
     columns = [

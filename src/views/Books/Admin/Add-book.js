@@ -21,7 +21,6 @@ class AddBook extends React.Component {
     };
 
     onFinish = (values) => {
-        console.log(values);
         this.setState({
             formSubmitted: true
         });

@@ -13,7 +13,7 @@ class Reservations extends React.Component {
         this.props.getVideosReservationsByUser();
     };
 
-    currentReservations = (reservation, index) => {
+    bookReservations = (reservation, index) => {
         return (
             <Card
                 key={index}
@@ -26,18 +26,17 @@ class Reservations extends React.Component {
                                 <Image
                                     preview={{visible: false}}
                                     width={100}
-                                        src={reservation.book.imageUrl}
+                                    src={reservation.book.imageUrl}
                                 />
                             </Col>
                             <Col span={16}>
                                 <Title level={3}>{reservation.book.title}</Title>
-                                <Space direction="horizontal">
+                                <div>
                                     <Text style={{fontWeight: 'bold'}}>Lent Date : {reservation.bookingStart}</Text>
-                                   <Text>{reservation.lendDate}</Text>
+                                </div>
+                                <div>
                                     <Text style={{fontWeight: 'bold'}}>Return Date : {reservation.bookingEnd}</Text>
-                                    <Text>{reservation.returnDate}</Text>
-                                    <Divider/>
-                                </Space>
+                                </div>
                             </Col>
                         </Row>
                     </Col>
@@ -46,7 +45,7 @@ class Reservations extends React.Component {
         );
     };
 
-    pastReservations = (reservation, index) => {
+    movieReservations = (reservation, index) => {
         return (
             <Card
                 key={index}
@@ -64,11 +63,12 @@ class Reservations extends React.Component {
                             </Col>
                             <Col span={16}>
                                 <Title level={3}>{reservation.video.title}</Title>
-                                <Space direction="horizontal">
+                                <div>
                                     <Text style={{fontWeight: 'bold'}}>Lent Date : {reservation.bookingStart}</Text>
+                                </div>
+                                <div>
                                     <Text style={{fontWeight: 'bold'}}>Return Date : {reservation.bookingEnd}</Text>
-                                    <Divider/>
-                                </Space>
+                                </div>
                             </Col>
                         </Row>
                     </Col>
@@ -90,7 +90,7 @@ class Reservations extends React.Component {
                     <TabPane tab="Reserved Books" key="1">
                         {
                             this.props.userBooksReservationList.length > 0 ? this.props.userBooksReservationList.map((row, index) => (
-                                this.currentReservations(row, index)
+                                this.bookReservations(row, index)
                             )) : (<div>
                                 <Empty/>
                             </div>)
@@ -98,8 +98,8 @@ class Reservations extends React.Component {
                     </TabPane>
                     <TabPane tab="Reserved Movies" key="2">
                         {
-                            this.props.userVideosReservationList.length > 0 ?  this.props.userVideosReservationList.map((row, index) => (
-                                this.pastReservations(row, index)
+                            this.props.userVideosReservationList.length > 0 ? this.props.userVideosReservationList.map((row, index) => (
+                                this.movieReservations(row, index)
                             )) : (<div>
                                 <Empty/>
                             </div>)

@@ -2,23 +2,46 @@ import React from "react";
 import {
     Breadcrumb,
     Image,
-    DatePicker,
     Space,
     Col,
     Typography,
     Row,
     Button,
     Divider,
-    List,
     Form,
     Input,
-    InputNumber, message, Modal
+    InputNumber, message, Modal, Comment, Avatar, Tooltip
 } from 'antd';
 import * as actions from "../../../actions";
 import {connect} from "react-redux";
 import {CloudUploadOutlined} from "@ant-design/icons";
+import moment from "moment";
 
-const {Title, Text, Paragraph} = Typography;
+const {Title, Text} = Typography;
+
+const CustomComment = ({comment}) => (
+    <Comment
+        // actions={[<span key="comment-nested-reply-to">Reply to</span>]}
+        author={<a>{comment.user.firstName} {comment.user.lastName}</a>}
+        avatar={
+            <Avatar
+                src={comment.user.imageUrl !== null ? comment.user.imageUrl : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
+                alt="Han Solo"
+            />
+        }
+        content={
+            <p>
+                {comment.comment}
+            </p>
+        }
+        datetime={
+            <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                <span>{moment(comment.dateTime).fromNow()}</span>
+            </Tooltip>
+        }
+    >
+    </Comment>
+);
 
 class EditMovieDetails extends React.Component {
 
@@ -35,11 +58,10 @@ class EditMovieDetails extends React.Component {
 
     componentDidMount() {
         const paths = window.location.pathname.split('/');
-        this.props.getMovieDetails(paths[3]);
+        this.props.getMovieDetails(paths[4]);
     };
 
     onChange(date, dateString) {
-        console.log(date, dateString);
     };
 
     edit = () => {
@@ -88,7 +110,6 @@ class EditMovieDetails extends React.Component {
                                                     <Title level={4}>Published Year : {this.props.movie.publishYear}</Title>
                                                     <Title level={4}>Studio : {this.props.movie.studio} presents</Title>
                                                     <Title level={4}>Director : {this.props.movie.director}</Title>
-                                                    <Button type='primary' onClick={this.edit}>Edit</Button>
                                                 </>) : (
                                                 <>
                                                     <Form labelCol={{span: 6}}
@@ -147,25 +168,18 @@ class EditMovieDetails extends React.Component {
                                     </Col>
                                 </Row>
                                 <Divider/>
-                                <Title level={3}>Description <span style={{color: 'grey'}}>Reviews (7)</span></Title>
+                                <Title level={3}>Description <span style={{color: 'grey'}}>Reviews ({this.props.comments.length})</span></Title>
                                 <Divider/>
-                                <Paragraph>
-                                    If you want to buy books online, you’ll get a better deal if you get them used.
-                                    Depending on
-                                    the condition you get them in, you may just end up paying a few cents plus shipping.
-                                    Make
-                                    sure you read through the description of the book to see if there are any damages
-                                    you should
-                                    be aware of.
-                                </Paragraph>
-                                <Paragraph>
-                                    Be sure to read everything about the item that you want to buy. A picture of a
-                                    product can
-                                    be deceiving. They can make products look much smaller or bigger that they really
-                                    are.
-                                    Reading the description will allow you to be confident in the item you are
-                                    purchasing.
-                                </Paragraph>
+                                <Space direction='vertical'>
+                                    {
+                                        this.props.comments !== null && this.props.comments.length > 0 ?
+                                            this.props.comments.map((row, index) => (
+                                                <CustomComment comment={row}/>
+                                            ))
+                                            :
+                                            null
+                                    }
+                                </Space>
                             </Col>
                         ) : <p>Loading...</p>
                     }
@@ -178,13 +192,15 @@ class EditMovieDetails extends React.Component {
 const mapStateToProps = state => {
     return {
         account_type: state.auths.account_type,
-        movie: state.movies.movie
+        movie: state.movies.movie,
+        comments: state.movies.comments,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        getMovieDetails: (movieId) => dispatch(actions.getMovieDetails(movieId))
+        getMovieDetails: (movieId) => dispatch(actions.getMovieDetails(movieId)),
+        getCommentsForMovie: (bookId) => dispatch(actions.getMovieComments(bookId))
     };
 };
 

@@ -12,7 +12,6 @@ export const getMemberships = () => {
         axios
             .get(url)
             .then(response => {
-                console.log(response.data);
                 dispatch(
                     {
                         type: actionTypes.VIEW_MEMBERSHIPS,
@@ -37,7 +36,6 @@ export const setAccountType = (account) => {
                 },
             })
             .then(response => {
-                console.log(response.data);
                 localStorage.setItem("username", account.username);
                 localStorage.setItem("password", account.password);
                 dispatch(
@@ -71,7 +69,6 @@ export const getAccountType = () => {
                 },
             })
             .then(response => {
-                console.log(response.data);
                 getLoggedUser();
                 dispatch(
                     {
@@ -99,7 +96,6 @@ export const getLoggedUser = () => {
                 },
             })
             .then(response => {
-                console.log(response.data);
                 dispatch(
                     {
                         type: actionTypes.SET_LOGGED_USER,
@@ -142,7 +138,6 @@ export const registerUser = (membershipType, userDetails) => {
                         },
                     })
                     .then(mResponse => {
-                        console.log('membershipDetails : ' + mResponse.data);
                         dispatch(
                             {
                                 type: actionTypes.REGISTER_USER_SUCCESS,
