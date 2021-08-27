@@ -12,9 +12,10 @@ class ViewBookDetails extends React.Component {
         this.state = {
             fromDate: '',
             toDate: '',
-            availability: false
+            availability: false,
+            formSubmitted: false
         };
-    }
+    };
 
     componentDidMount() {
         this.props.getUser();
@@ -48,16 +49,12 @@ class ViewBookDetails extends React.Component {
         this.setState({
             formSubmitted: true
         });
-        const booking = {
-            "bookingEnd": this.state.toDate,
-            "bookingStart": this.state.fromDate,
-            "user": {
-                "id": this.props.user.id
-            }
-        };
+
         const reserveDetails = {
             "book": bookDetails.id,
-            "booking": booking
+            "bookingEnd": this.state.toDate,
+            "bookingStart": this.state.fromDate,
+            "userId": this.props.user.id
         };
 
         console.log(reserveDetails)
@@ -75,12 +72,12 @@ class ViewBookDetails extends React.Component {
                 : message.error('Book is not available') &&
                 this.setState({
                     availability: false
-                })
+                });
         }
     };
 
     render() {
-        const {availability} = this.state;
+        const {availability, formSubmitted} = this.state;
         return (
             <>
                 <Breadcrumb style={{margin: '16px 0'}}>
@@ -173,6 +170,8 @@ class ViewBookDetails extends React.Component {
                         </Paragraph>
                     </Col>
                 </Row>
+                {formSubmitted && this.props.reserveBookSuccess && message.success('Book has been reserved successfully!')}
+                {formSubmitted && this.props.reserveBookError && message.error('Failed to reserved book!')}
             </>
         );
     }

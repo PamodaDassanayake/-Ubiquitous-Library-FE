@@ -3,6 +3,8 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
     bookAvailability: null,
     userReservationList: [],
+    userBooksReservationList: [],
+    userVideosReservationList: [],
     reserveBookLoading: false,
     reserveBookSuccess: false,
     reserveBookError: false,
@@ -14,8 +16,10 @@ const reservationReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.GET_RESERVATIONS_LIST:
             return {...state, userReservationList: action.reservationList};
-        case actionTypes.GET_RESERVATIONS_LIST_BY_USER:
-            return {...state, userReservationList: action.reservationList};
+        case actionTypes.GET_BOOKS_RESERVATIONS_LIST_BY_USER:
+            return {...state, userBooksReservationList: action.reservationList};
+        case actionTypes.GET_VIDEOS_RESERVATIONS_LIST_BY_USER:
+            return {...state, userVideosReservationList: action.reservationList};
         case actionTypes.CHECK_BOOK_AVAILABILITY:
             return {...state, bookAvailability: action.bookAvailability};
         case actionTypes.RESERVE_BOOK:

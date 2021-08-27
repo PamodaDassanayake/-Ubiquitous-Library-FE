@@ -79,16 +79,20 @@ export const getAllUserReservations = () => {
     }
 }
 
-export const getReservationsByUser = (userId) => {
+export const getBooksReservationsByUser = () => {
     return dispatch => {
-        let url = server_ip + `/userReservations`;
+        let url = server_ip + api + `/library/reserved/books`;
         axios
-            .get(url)
+            .post(url, {
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
             .then(response => {
                 console.log(response.data);
                 dispatch(
                     {
-                        type: actionTypes.GET_RESERVATIONS_LIST_BY_USER,
+                        type: actionTypes.GET_BOOKS_RESERVATIONS_LIST_BY_USER,
                         reservationList: response.data
                     }
                 );
@@ -96,6 +100,28 @@ export const getReservationsByUser = (userId) => {
             console.log(error);
         });
     }
-}
+};
 
+export const getVideosReservationsByUser = () => {
+    return dispatch => {
+        let url = server_ip + api + `/library/reserved/videos`;
+        axios
+            .post(url, {
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                console.log(response.data);
+                dispatch(
+                    {
+                        type: actionTypes.GET_VIDEOS_RESERVATIONS_LIST_BY_USER,
+                        reservationList: response.data
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};
 

@@ -56,7 +56,7 @@ export const getMoviesList = () => {
 
 export const getMovieDetails = (movieId) => {
     return dispatch => {
-        let url = server_ip + api + `/videos/${movieId}`;
+        let url = server_ip + api + `/videos/videos/${movieId}`;
         axios
             .get(url, {
                 headers: {
