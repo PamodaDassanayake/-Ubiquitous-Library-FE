@@ -45,7 +45,8 @@ export const reserveBook = (data) => {
                 console.log(response.data)
                 dispatch(
                     {
-                        type: actionTypes.RESERVE_BOOK_SUCCESS
+                        type: actionTypes.RESERVE_BOOK_SUCCESS,
+                        reserveFee: response.data
                     }
                 );
             }).catch(error => {
@@ -53,7 +54,7 @@ export const reserveBook = (data) => {
             dispatch(
                 {
                     type: actionTypes.RESERVE_BOOK_FAIL,
-                    payload: error.response.data
+                    payload: error.response
                 }
             );
         });
@@ -83,7 +84,7 @@ export const getBooksReservationsByUser = () => {
     return dispatch => {
         let url = server_ip + api + `/library/reserved/books`;
         axios
-            .post(url, {
+            .post(url, null,{
                 headers: {
                     'Authorization': `Basic ${getToken()}`
                 },
@@ -106,7 +107,7 @@ export const getVideosReservationsByUser = () => {
     return dispatch => {
         let url = server_ip + api + `/library/reserved/videos`;
         axios
-            .post(url, {
+            .post(url, null,{
                 headers: {
                     'Authorization': `Basic ${getToken()}`
                 },
@@ -121,6 +122,70 @@ export const getVideosReservationsByUser = () => {
                 );
             }).catch(error => {
             console.log(error);
+        });
+    }
+};
+
+export const settleBookPayment = (reserveId, fee) => {
+    return dispatch => {
+        let url = server_ip + api + `/library/pay/book/${reserveId}/${fee}`;
+        dispatch(
+            {
+                type: actionTypes.PAYMENT
+            }
+        );
+        axios
+            .post(url, null,{
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.PAYMENT_SUCCESS
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+            dispatch(
+                {
+                    type: actionTypes.PAYMENT_FAIL,
+                    payload: error.response.data
+                }
+            );
+        });
+    }
+};
+
+export const settleMoviePayment = (reserveId, fee) => {
+    return dispatch => {
+        let url = server_ip + api + `/library/pay/movie/${reserveId}/${fee}`;
+        dispatch(
+            {
+                type: actionTypes.PAYMENT
+            }
+        );
+        axios
+            .post(url, null,{
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.PAYMENT_SUCCESS
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+            dispatch(
+                {
+                    type: actionTypes.PAYMENT_FAIL,
+                    payload: error.response.data
+                }
+            );
         });
     }
 };

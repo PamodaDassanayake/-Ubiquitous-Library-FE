@@ -9,7 +9,8 @@ const initialState = {
     movieSubmitError: false,
     movieSubmitErrorMessage: '',
     movieSubmitSuccess: false,
-    movieSubmitLoading: false
+    movieSubmitLoading: false,
+    comments: []
 };
 
 
@@ -31,6 +32,8 @@ const movieReducer = (state = initialState, action) => {
             return {...state, movie: action.movie};
         case actionTypes.VIEW_MOVIES_LIST:
             return {...state, moviesList: action.movies};
+        case actionTypes.VIEW_COMMENTS:
+            return {...state, comments: action.comments};
         default:
             return state;
     }

@@ -8,7 +8,12 @@ const initialState = {
     reserveBookLoading: false,
     reserveBookSuccess: false,
     reserveBookError: false,
-    reserveBookErrorMessage: ''
+    reserveBookErrorMessage: '',
+    reserveFee: null,
+    paymentLoading: false,
+    paymentSuccess: false,
+    paymentError: false,
+    paymentErrorMessage: '',
 };
 
 
@@ -25,13 +30,31 @@ const reservationReducer = (state = initialState, action) => {
         case actionTypes.RESERVE_BOOK:
             return {...state, reserveBookError: false, reserveBookLoading: true, reserveBookSuccess: false};
         case actionTypes.RESERVE_BOOK_SUCCESS:
-            return {...state, reserveBookError: false, reserveBookLoading: false, reserveBookSuccess: true};
+            return {
+                ...state,
+                reserveBookError: false,
+                reserveBookLoading: false,
+                reserveBookSuccess: true,
+                reserveFee: action.reserveFee
+            };
         case actionTypes.RESERVE_BOOK_FAIL:
             return {
                 ...state, reserveBookError: true,
                 reserveBookLoading: false,
                 reserveBookSuccess: false,
                 reserveBookErrorMessage: action.payload
+            };
+        case actionTypes.PAYMENT:
+            return {...state, paymentError: false, paymentLoading: true, paymentSuccess: false};
+        case actionTypes.PAYMENT_SUCCESS:
+            return {...state, paymentError: false, paymentLoading: false, paymentSuccess: true};
+        case actionTypes.PAYMENT_FAIL:
+            return {
+                ...state,
+                paymentError: true,
+                paymentLoading: false,
+                paymentSuccess: false,
+                paymentErrorMessage: action.payload
             };
         default:
             return state;

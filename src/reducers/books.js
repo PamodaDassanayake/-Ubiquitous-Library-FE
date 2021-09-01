@@ -9,7 +9,8 @@ const initialState = {
     bookSubmitError: false,
     bookSubmitErrorMessage: '',
     bookSubmitSuccess: false,
-    bookSubmitLoading: false
+    bookSubmitLoading: false,
+    comments:[]
 };
 
 const bookReducer = (state = initialState, action) => {
@@ -36,6 +37,8 @@ const bookReducer = (state = initialState, action) => {
             return {...state, availability: action.availability};
         case actionTypes.SEARCH_BOOKS:
             return {...state, booksList: action.books};
+        case actionTypes.VIEW_COMMENTS:
+            return {...state, comments: action.comments};
         default:
             return state;
     }

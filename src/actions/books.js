@@ -106,3 +106,49 @@ export const searchBooks = (title, author) => {
     }
 };
 
+export const getCommentsForBook = (bookId) => {
+    const token = getToken();
+    return dispatch => {
+        let url = server_ip + api + `/comment/books/${bookId}`;
+        axios
+            .get(url, {
+                headers: {
+                    'Authorization': `Basic ${token}`
+                },
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.VIEW_COMMENTS,
+                        comments: response.data
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};
+
+export const postCommentForBook = (details) => {
+    const token = getToken();
+    return dispatch => {
+        let url = server_ip + api + `/comment/books`;
+        axios
+            .post(url, details, {
+                headers: {
+                    'Authorization': `Basic ${token}`
+                },
+            })
+            .then(response => {
+                console.log(response.data)
+                dispatch(
+                    {
+                        type: actionTypes.POST_COMMENT
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};
+

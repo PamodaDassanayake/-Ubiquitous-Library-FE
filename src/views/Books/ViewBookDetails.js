@@ -1,9 +1,77 @@
 import React from "react";
-import {Breadcrumb, Image, DatePicker, Space, Col, Typography, Row, Button, Divider, message} from 'antd';
+import {
+    Breadcrumb,
+    Image,
+    DatePicker,
+    Space,
+    Col,
+    Typography,
+    Row,
+    Button,
+    Divider,
+    message,
+    Form,
+    Input,
+    Avatar,
+    Tooltip,
+    Modal,
+    List,
+    Comment
+} from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
+import moment from 'moment';
+import {UserOutlined, CreditCardOutlined, NumberOutlined} from "@ant-design/icons";
 
 const {Title, Text, Paragraph} = Typography;
+const {TextArea} = Input;
+
+const CommentList = ({comments}) => (
+    <List
+        dataSource={comments}
+        header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
+        itemLayout="horizontal"
+        renderItem={props => <Comment {...props} />}
+    />
+);
+
+
+const Editor = ({onChange, onSubmit, submitting, value}) => (
+    <>
+        <Form.Item>
+            <TextArea rows={4} onChange={onChange} value={value}/>
+        </Form.Item>
+        <Form.Item>
+            <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
+                Add Comment
+            </Button>
+        </Form.Item>
+    </>
+);
+
+const CustomComment = ({comment}) => (
+    <Comment
+        // actions={[<span key="comment-nested-reply-to">Reply to</span>]}
+        author={<a>{comment.user.firstName} {comment.user.lastName}</a>}
+        avatar={
+            <Avatar
+                src={comment.user.imageUrl !== null ? comment.user.imageUrl : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
+                alt="Han Solo"
+            />
+        }
+        content={
+            <p>
+                {comment.comment}
+            </p>
+        }
+        datetime={
+            <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                <span>{moment(comment.dateTime).fromNow()}</span>
+            </Tooltip>
+        }
+    >
+    </Comment>
+);
 
 class ViewBookDetails extends React.Component {
 
@@ -13,7 +81,11 @@ class ViewBookDetails extends React.Component {
             fromDate: '',
             toDate: '',
             availability: false,
-            formSubmitted: false
+            formSubmitted: false,
+            comments: [],
+            submitting: false,
+            value: '',
+            paymentModalVisible: false
         };
     };
 
@@ -21,6 +93,7 @@ class ViewBookDetails extends React.Component {
         this.props.getUser();
         const paths = window.location.pathname.split('/');
         this.props.getBookDetails(paths[3]);
+        this.props.getCommentsForBook(paths[3]);
     };
 
     getFromDate = (date, dateString) => {
@@ -62,10 +135,69 @@ class ViewBookDetails extends React.Component {
         this.props.reserveBook(reserveDetails);
     };
 
+    submitComment = () => {
+        if (!this.state.value) {
+            return;
+        }
+
+        this.setState({
+            submitting: true,
+        });
+
+        let data = {
+            "book": {
+                "id": this.props.book.id
+            },
+            "comment": this.state.value,
+            "rating": 0,
+            "user": {
+                "id": this.props.user.id
+            }
+        };
+
+        this.props.postCommentForBook(data);
+
+        setTimeout(() => {
+            this.setState({
+                submitting: false,
+                value: '',
+                comments: [
+                    ...this.state.comments,
+                    {
+                        author: this.props.user.firstName + " " + this.props.user.lastName,
+                        avatar: this.props.user.imageUrl !== null ? this.props.user.imageUrl : "" +
+                            "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
+                        content: <p>{this.state.value}</p>,
+                        datetime: moment().fromNow(),
+                    },
+                ],
+            });
+        }, 1000);
+    };
+
+    onChangeComment = e => {
+        this.setState({
+            value: e.target.value,
+        });
+    };
+
+    hideModal = () => {
+        this.setState({
+            paymentModalVisible: false,
+        });
+    };
+
+    submitPayment = () => {
+        this.setState({
+            formSubmitted: false
+        });
+        this.props.settlePayment(this.props.reserveFee.id, this.props.reserveFee.fee);
+    };
+
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.props.bookAvailability !== nextProps.bookAvailability) {
             // eslint-disable-next-line no-unused-expressions
-            this.props.bookAvailability !== null && this.props.bookAvailability.availableQty === null ?
+            this.props.bookAvailability !== null && this.props.bookAvailability.availableQty === 0 ?
                 message.success('Book is available') && this.setState({
                     availability: true
                 })
@@ -74,10 +206,15 @@ class ViewBookDetails extends React.Component {
                     availability: false
                 });
         }
+        if (this.props.reserveBookSuccess !== nextProps.reserveBookSuccess) {
+            this.setState({
+                paymentModalVisible: true
+            });
+        }
     };
 
     render() {
-        const {availability, formSubmitted} = this.state;
+        const {availability, formSubmitted, comments, submitting, value} = this.state;
         return (
             <>
                 <Breadcrumb style={{margin: '16px 0'}}>
@@ -155,23 +292,96 @@ class ViewBookDetails extends React.Component {
                             </Col>
                         </Row>
                         <Divider/>
-                        <Title level={3}>Description <span style={{color: 'grey'}}>Reviews (7)</span></Title>
+                        <Title level={3}>Description <span
+                            style={{color: 'grey'}}>Reviews ({this.props.comments.length})</span></Title>
                         <Divider/>
-                        <Paragraph>
-                            If you want to buy books online, you’ll get a better deal if you get them used. Depending on
-                            the condition you get them in, you may just end up paying a few cents plus shipping. Make
-                            sure you read through the description of the book to see if there are any damages you should
-                            be aware of.
-                        </Paragraph>
-                        <Paragraph>
-                            Be sure to read everything about the item that you want to buy. A picture of a product can
-                            be deceiving. They can make products look much smaller or bigger that they really are.
-                            Reading the description will allow you to be confident in the item you are purchasing.
-                        </Paragraph>
+                        <Comment
+                            avatar={
+                                <Avatar
+                                    src={this.props.user !== null && this.props.user.imageUrl !== null ? this.props.user.imageUrl : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
+                                    alt={this.props.user !== null && this.props.user.firstName !== null ? this.props.user.firstName : "User"}
+                                />
+                            }
+                            content={
+                                <Editor
+                                    onChange={this.onChangeComment}
+                                    onSubmit={this.submitComment}
+                                    submitting={submitting}
+                                    value={value}
+                                />
+                            }
+                        />
+                        {comments.length > 0 && <CommentList comments={comments}/>}
+                        <Space direction='vertical'>
+                            {
+                                comments.length > 0 || (this.props.comments !== null && this.props.comments.length > 0) ?
+                                    this.props.comments.map((row, index) => (
+                                        <CustomComment comment={row}/>
+                                    ))
+                                    :
+                                    null
+                            }
+                        </Space>
                     </Col>
                 </Row>
-                {formSubmitted && this.props.reserveBookSuccess && message.success('Book has been reserved successfully!')}
-                {formSubmitted && this.props.reserveBookError && message.error('Failed to reserved book!')}
+                {
+                    this.props.reserveFee !== null &&
+                    (
+                        <Modal
+                            title="Modal"
+                            visible={this.state.paymentModalVisible}
+                            onOk={this.hideModal}
+                            onCancel={this.hideModal}
+                        >
+                            <Form
+                                initialValues={{remember: true}}
+                                onFinish={this.submitPayment}
+                                style={{width: '500px', margin: 'auto'}}
+                                layout='vertical'
+                            >
+                                <Form.Item
+                                    name="fee"
+                                >
+                                    <h2>Fee : Rs. {this.props.reserveFee.fee}</h2>
+                                </Form.Item>
+                                <Form.Item
+                                    name="cardName"
+                                    label='Name on Card'
+                                    rules={[{required: true, message: 'Please input your Name on Card!'}]}
+                                >
+                                    <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Name on Card"/>
+                                </Form.Item>
+                                <Form.Item
+                                    name="cardNo"
+                                    label='Card Number'
+                                    rules={[{required: true, message: 'Please input your Card No!'}]}
+                                >
+                                    <Input
+                                        prefix={<CreditCardOutlined className="site-form-item-icon"/>}
+                                        placeholder="Card Number"
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    name="cvv"
+                                    label='CVV'
+                                    rules={[{required: true, message: 'Please input your Card No!'}]}
+                                >
+                                    <Input
+                                        prefix={<NumberOutlined className="site-form-item-icon"/>}
+                                        placeholder="CVV"
+                                    />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit" className="login-form-button">
+                                        PAY RS. {this.props.reserveFee.fee}.00
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Modal>
+                    )
+                }
+                {/*{formSubmitted && this.props.reserveBookSuccess && message.success('Book has been reserved successfully!')}*/}
+                {/*{formSubmitted && this.props.reserveBookError && message.error('Failed to reserved book!')}*/}
             </>
         );
     }
@@ -185,7 +395,13 @@ const mapStateToProps = state => {
         reserveBookLoading: state.reservations.reserveBookLoading,
         reserveBookSuccess: state.reservations.reserveBookSuccess,
         reserveBookError: state.reservations.reserveBookError,
-        reserveBookErrorMessage: state.reservations.reserveBookErrorMessage
+        reserveBookErrorMessage: state.reservations.reserveBookErrorMessage,
+        comments: state.books.comments,
+        reserveFee: state.reservations.reserveFee,
+        paymentLoading: state.reservations.paymentLoading,
+        paymentSuccess: state.reservations.paymentSuccess,
+        paymentError: state.reservations.paymentError,
+        paymentErrorMessage: state.reservations.paymentErrorMessage
     };
 };
 
@@ -195,6 +411,9 @@ const mapDispatchToProps = dispatch => {
         getBookDetails: (bookId) => dispatch(actions.getBookDetails(bookId)),
         chekBookAvailability: (data) => dispatch(actions.chekBookAvailability(data)),
         reserveBook: (data) => dispatch(actions.reserveBook(data)),
+        getCommentsForBook: (bookId) => dispatch(actions.getCommentsForBook(bookId)),
+        postCommentForBook: (details) => dispatch(actions.postCommentForBook(details)),
+        settlePayment: (reserveId, fee) => dispatch(actions.settleBookPayment(reserveId, fee)),
     };
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {Breadcrumb, Button, Card, Col, DatePicker, Divider, Image, Row, Space, Tabs, Typography} from 'antd';
+import {Breadcrumb, Button, Card, Col, DatePicker, Divider, Empty, Image, Row, Space, Tabs, Typography} from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
 
@@ -26,23 +26,18 @@ class Reservations extends React.Component {
                                 <Image
                                     preview={{visible: false}}
                                     width={100}
-                                    src={reservation.Book.image}
+                                        src={reservation.book.imageUrl}
                                 />
                             </Col>
                             <Col span={16}>
-                                <Title level={3}>{reservation.Book.title}</Title>
+                                <Title level={3}>{reservation.book.title}</Title>
                                 <Space direction="horizontal">
-                                    <Text style={{fontWeight: 'bold'}}>Lent Date</Text>
+                                    <Text style={{fontWeight: 'bold'}}>Lent Date : {reservation.bookingStart}</Text>
                                    <Text>{reservation.lendDate}</Text>
-                                    <Text style={{fontWeight: 'bold'}}>Return Date</Text>
+                                    <Text style={{fontWeight: 'bold'}}>Return Date : {reservation.bookingEnd}</Text>
                                     <Text>{reservation.returnDate}</Text>
                                     <Divider/>
                                 </Space>
-                                <div>
-                                    <Space direction='vertical'>
-                                        <Button type='primary' shape='round' size='middle'>Edit</Button>
-                                    </Space>
-                                </div>
                             </Col>
                         </Row>
                     </Col>
@@ -64,16 +59,14 @@ class Reservations extends React.Component {
                                 <Image
                                     preview={{visible: false}}
                                     width={100}
-                                    src={reservation.Book.image}
+                                    src={reservation.video.imageUrl}
                                 />
                             </Col>
                             <Col span={16}>
-                                <Title level={3}>{reservation.Book.title}</Title>
+                                <Title level={3}>{reservation.video.title}</Title>
                                 <Space direction="horizontal">
-                                    <Text style={{fontWeight: 'bold'}}>Lent Date</Text>
-                                    <Text>{reservation.lendDate}</Text>
-                                    <Text style={{fontWeight: 'bold'}}>Returned Date</Text>
-                                    <Text>{reservation.returnDate}</Text>
+                                    <Text style={{fontWeight: 'bold'}}>Lent Date : {reservation.bookingStart}</Text>
+                                    <Text style={{fontWeight: 'bold'}}>Return Date : {reservation.bookingEnd}</Text>
                                     <Divider/>
                                 </Space>
                             </Col>
@@ -96,16 +89,20 @@ class Reservations extends React.Component {
                 <Tabs type="card">
                     <TabPane tab="Reserved Books" key="1">
                         {
-                            this.props.userBooksReservationList.length > 0 ? this.props.userBooksReservationList[0].current.map((row, index) => (
+                            this.props.userBooksReservationList.length > 0 ? this.props.userBooksReservationList.map((row, index) => (
                                 this.currentReservations(row, index)
-                            )) : null
+                            )) : (<div>
+                                <Empty/>
+                            </div>)
                         }
                     </TabPane>
                     <TabPane tab="Reserved Movies" key="2">
                         {
-                            this.props.userVideosReservationList.length > 0 ?  this.props.userVideosReservationList[1].past.map((row, index) => (
+                            this.props.userVideosReservationList.length > 0 ?  this.props.userVideosReservationList.map((row, index) => (
                                 this.pastReservations(row, index)
-                            )) : null
+                            )) : (<div>
+                                <Empty/>
+                            </div>)
                         }
                     </TabPane>
                 </Tabs>
