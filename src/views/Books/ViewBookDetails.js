@@ -212,6 +212,26 @@ class ViewBookDetails extends React.Component {
                 paymentModalVisible: true
             });
         }
+        if (this.props.paymentSuccess){
+            this.setState({
+                paymentModalVisible: false
+            });
+        }
+    };
+
+    disabledDate=(current)=> {
+        let customDate = new Date()-1;
+        return current && current < moment(customDate);
+    };
+
+    disabledToDate=(current)=>{
+        let customDate;
+        if (this.state.fromDate===''){
+            customDate = new Date()-1;
+        }else{
+            customDate = this.state.fromDate;
+        }
+        return current && current < moment(customDate);
     };
 
     render() {
@@ -241,9 +261,9 @@ class ViewBookDetails extends React.Component {
                                 </div>
                                 <Space direction="horizontal">
                                     <Text>From</Text>
-                                    <DatePicker onChange={this.getFromDate}/>
+                                    <DatePicker onChange={this.getFromDate} disabledDate={this.disabledDate}/>
                                     <Text>To</Text>
-                                    <DatePicker onChange={this.getToDate}/>
+                                    <DatePicker onChange={this.getToDate} disabledDate={this.disabledToDate}/>
                                     <Button type='primary' shape='round' size='middle'
                                             onClick={() => this.chekBookAvailability(this.props.book)}>Check
                                         Availability</Button>
@@ -280,15 +300,9 @@ class ViewBookDetails extends React.Component {
                                 </Row>
                             </Col>
                             <Col span={10}>
-                                <Title level={3}>About The Author</Title>
-                                <Title level={4}>Saifudin A.</Title>
+                                <Title level={3}>About The Book</Title>
                                 <Paragraph>
-                                    How to Build a Successful Blog Business is a straight forward guide to building a
-                                    publishing business online that covers everything from choosing a niche to hiring
-                                    staff, registering a business to selling it.
-                                    Finding traffic to monetizing it whether you are interested in creating an
-                                    additional income stream or building a fully-fledged business, this is an essential
-                                    read for web entrepreneurs and online publishers.
+                                    {this.props.book.description}
                                 </Paragraph>
                             </Col>
                         </Row>
@@ -376,12 +390,15 @@ class ViewBookDetails extends React.Component {
                                 </Form.Item>
                                 <Form.Item>
                                     <Button type="primary" htmlType="submit" className="login-form-button">
-                                        {/*PAY RS. {this.props.reserveFee.fee}.00*/}
+                                        PAY RS. {this.props.reserveFee.fee}.00
                                     </Button>
                                 </Form.Item>
                             </Form>
                         </Modal>
                     )
+                }
+                {
+                    this.props.reserveBookError && message.error(this.props.reserveBookErrorMessage.data.message)
                 }
                 {formSubmitted && this.props.paymentSuccess && message.success('Book has been reserved successfully!') &&  this.setState({
                     formSubmitted: false

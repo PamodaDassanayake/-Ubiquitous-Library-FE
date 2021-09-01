@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import {CloudUploadOutlined} from "@ant-design/icons";
 
 const {Text} = Typography;
+const {TextArea} = Input;
 
 class AddBook extends React.Component {
 
@@ -26,6 +27,7 @@ class AddBook extends React.Component {
         });
         const data = {
             title: values.book.name,
+            description: values.book.description,
             author: values.book.author,
             edition: values.book.edition,
             isbn: values.book.isbn,
@@ -112,6 +114,10 @@ class AddBook extends React.Component {
                     <Form.Item fieldKey='name' name={['book', 'name']} label="Book name"
                                rules={[{type: 'string', required: true}]}>
                         <Input onChange={this.getBookName}/>
+                    </Form.Item>
+                    <Form.Item fieldKey='description' name={['book', 'description']} label="Description"
+                               rules={[{type: 'string', required: true}]}>
+                        <TextArea rows={4} />
                     </Form.Item>
                     <Form.Item fieldKey='author' name={['book', 'author']} label="Author"
                                rules={[{type: 'string', required: true}]}>
