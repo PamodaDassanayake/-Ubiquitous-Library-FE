@@ -343,7 +343,7 @@ class ViewBookDetails extends React.Component {
                     this.props.reserveFee !== null &&
                     (
                         <Modal
-                            title="Modal"
+                            title="Payment"
                             width={600}
                             visible={this.state.paymentModalVisible}
 

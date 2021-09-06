@@ -128,18 +128,18 @@ class Dashboard extends React.Component {
                         {
                             this.props.account_type !== '' &&
                            <>
-                               <Menu.Item key="4" icon={<UserOutlined/>}>
+                               <Menu.Item key="7" icon={<UserOutlined/>}>
                                    <Link to='/profile'/>
                                    Profile
                                </Menu.Item>
-                               <Menu.Item key="7" icon={<LoginOutlined/>} onClick={() => this.props.signOutSystem()}>
+                               <Menu.Item key="8" icon={<LoginOutlined/>} onClick={() => this.props.signOutSystem()}>
                                    Sign Out
                                </Menu.Item>
                            </>
                         }
                         {
                             this.props.account_type === '' &&
-                            <Menu.Item key="7" icon={<LoginOutlined/>} onClick={this.signIn}>
+                            <Menu.Item key="8" icon={<LoginOutlined/>} onClick={this.signIn}>
                                 Sign In
                             </Menu.Item>
                         }

@@ -17,7 +17,7 @@ import {connect} from "react-redux";
 import {CloudUploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 
-const {Title, Text} = Typography;
+const {Title, Text, Paragraph} = Typography;
 
 const CustomComment = ({comment}) => (
     <Comment
@@ -124,14 +124,16 @@ class EditBookDetails extends React.Component {
                                                         <h3>ISBN</h3>
                                                         <h3>Edition</h3>
                                                         <h3>Copies</h3>
+                                                        <h3>Description</h3>
                                                     </Col>
 
-                                                    <Col span={10}>
+                                                    <Col span={16}>
                                                         <h3>{this.props.book.author}</h3>
                                                         <h3>{this.props.book.publisher}</h3>
                                                         <h3>{this.props.book.isbn}</h3>
                                                         <h3>{this.props.book.edition}</h3>
                                                         <h3>{this.props.book.noOfCopies}</h3>
+                                                        <p>{this.props.book.description}</p>
                                                     </Col>
                                                 </Row>
                                             </>) : (

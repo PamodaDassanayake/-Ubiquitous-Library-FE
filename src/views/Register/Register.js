@@ -15,7 +15,14 @@ import {
     Empty,
     Image
 } from 'antd';
-import {LockFilled, MailFilled, UserAddOutlined, CheckCircleTwoTone, UploadOutlined} from "@ant-design/icons";
+import {
+    LockFilled,
+    MailFilled,
+    UserAddOutlined,
+    CheckCircleTwoTone,
+    UploadOutlined,
+    UserOutlined, CreditCardOutlined, NumberOutlined
+} from "@ant-design/icons";
 import {connect} from "react-redux";
 
 import * as actions from "../../actions";
@@ -35,7 +42,9 @@ class Register extends React.Component {
             visibleUploadModal: false,
             isWelcomeModalVisible: false,
             imageUploaded: false,
-            imageLink: ''
+            imageLink: '',
+            userData: null,
+            showPaymentOption: false
         }
     };
 
@@ -44,27 +53,11 @@ class Register extends React.Component {
     };
 
     handleSubmit = (values) => {
+
         this.setState({
-            submitted: true
+            showPaymentOption: true,
+            userData: values
         });
-
-        const userData = {
-            "activated": true,
-            "authorities": [
-                "ROLE_USER"
-            ],
-            "createdBy": "System",
-            "email": values.email,
-            "firstName": values.firstName,
-            "imageUrl": this.state.imageLink,
-            "langKey": "en",
-            "lastName": values.lastName,
-            "login": values.login,
-            "password": values.password
-        };
-
-        this.props.registerUser(this.state.pricePlan.type, userData);
-
     };
 
     toLogin = () => {
@@ -146,6 +139,30 @@ class Register extends React.Component {
         this.setState({
             visibleUploadModal: false
         });
+    };
+
+    settlePayment = () => {
+        this.setState({
+            submitted: true
+        });
+        let values= this.state.userData;
+        console.log(values)
+        const userData = {
+            "activated": true,
+            "authorities": [
+                "ROLE_USER"
+            ],
+            "createdBy": "System",
+            "email": values.email,
+            "firstName": values.firstName,
+            "imageUrl": this.state.imageLink,
+            "langKey": "en",
+            "lastName": values.lastName,
+            "login": values.login,
+            "password": values.password
+        };
+
+        this.props.registerUser(this.state.pricePlan.type, userData);
     };
 
     render() {
@@ -251,109 +268,151 @@ class Register extends React.Component {
                                     {/*        : null*/}
                                     {/*    }*/}
                                     {/*</Form.Item>*/}
-                                    <Form.Item
-                                        name='login'
-                                        rules={[{
-                                            required: true,
-                                            message: 'Please input your username!',
-                                            whitespace: false
-                                        }]}
-                                    >
-                                        <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
-                                               placeholder='Username'/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="firstName"
-                                        rules={[{
-                                            required: true,
-                                            message: 'Please input your first name!',
-                                            whitespace: true
-                                        }]}
-                                    >
-                                        <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
-                                               placeholder='First Name'/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="lastName"
-                                        rules={[{
-                                            required: true,
-                                            message: 'Please input your last name!',
-                                            whitespace: true
-                                        }]}
-                                    >
-                                        <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
-                                               placeholder='Last Name'/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="email"
-                                        rules={[
-                                            {
-                                                type: 'email',
-                                                message: 'The input is not valid E-mail!',
-                                            },
-                                            {
+                                    {!this.state.showPaymentOption ? (
+                                        <>
+                                            <Form.Item
+                                            name='login'
+                                            rules={[{
                                                 required: true,
-                                                message: 'Please input your E-mail!',
-                                            },
-                                            {whitespace: true}
-                                        ]}
-                                    >
-                                        <Input prefix={<MailFilled style={{fontSize: 13}}/>}
-                                               placeholder='Email'/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="password"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your password!'
-                                            },
-                                            {
-                                                min: 4,
-                                                message: 'Please enter password with minimum 4 character 4'
-                                            }
-                                        ]}
-                                        hasFeedback
-                                    >
-                                        <Input prefix={<LockFilled style={{fontSize: 13}}/>} type='password'
-                                               placeholder='Password'/>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="confirm"
-                                        dependencies={['password']}
-                                        hasFeedback
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please confirm your password!',
-                                            },
-                                            {
-                                                min: 4,
-                                                message: 'Please enter password with minimum 4 character 4'
-                                            },
-                                            ({getFieldValue}) => ({
-                                                validator(_, value) {
-                                                    if (!value || getFieldValue('password') === value) {
-                                                        return Promise.resolve();
+                                                message: 'Please input your username!',
+                                                whitespace: false
+                                            }]}
+                                        >
+                                            <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
+                                                   placeholder='Username'/>
+                                        </Form.Item>
+                                            <Form.Item
+                                                name="firstName"
+                                                rules={[{
+                                                    required: true,
+                                                    message: 'Please input your first name!',
+                                                    whitespace: true
+                                                }]}
+                                            >
+                                                <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
+                                                       placeholder='First Name'/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="lastName"
+                                                rules={[{
+                                                    required: true,
+                                                    message: 'Please input your last name!',
+                                                    whitespace: true
+                                                }]}
+                                            >
+                                                <Input prefix={<UserAddOutlined style={{fontSize: 13}}/>}
+                                                       placeholder='Last Name'/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="email"
+                                                rules={[
+                                                    {
+                                                        type: 'email',
+                                                        message: 'The input is not valid E-mail!',
+                                                    },
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your E-mail!',
+                                                    },
+                                                    {whitespace: true}
+                                                ]}
+                                            >
+                                                <Input prefix={<MailFilled style={{fontSize: 13}}/>}
+                                                       placeholder='Email'/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="password"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your password!'
+                                                    },
+                                                    {
+                                                        min: 4,
+                                                        message: 'Please enter password with minimum 4 character 4'
                                                     }
-                                                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                                                },
-                                            }),
-                                        ]}
-                                    >
-                                        <Input prefix={<LockFilled style={{fontSize: 13}}/>} type='password'
-                                               placeholder='Confirm password'/>
-                                    </Form.Item>
-                                    <>
-                                        <Button className="btn-register" size="large"
-                                                loading={this.state.loading} htmlType='submit' shape='round'
-                                                style={{backgroundColor: '#01c097', color: '#ffffff'}}>Sign
-                                            up</Button> or
+                                                ]}
+                                                hasFeedback
+                                            >
+                                                <Input prefix={<LockFilled style={{fontSize: 13}}/>} type='password'
+                                                       placeholder='Password'/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="confirm"
+                                                dependencies={['password']}
+                                                hasFeedback
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please confirm your password!',
+                                                    },
+                                                    {
+                                                        min: 4,
+                                                        message: 'Please enter password with minimum 4 character 4'
+                                                    },
+                                                    ({getFieldValue}) => ({
+                                                        validator(_, value) {
+                                                            if (!value || getFieldValue('password') === value) {
+                                                                return Promise.resolve();
+                                                            }
+                                                            return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                                        },
+                                                    }),
+                                                ]}
+                                            >
+                                                <Input prefix={<LockFilled style={{fontSize: 13}}/>} type='password'
+                                                       placeholder='Confirm password'/>
+                                            </Form.Item>
+                                            <Button className="btn-register" size="large"
+                                                    loading={this.state.loading} shape='round'
+                                                    htmlType="submit"
+                                                    style={{backgroundColor: '#01c097', color: '#ffffff'}}>Sign
+                                                up</Button> or
 
-                                        <Button type="link" size='large' onClick={this.toLogin}>
-                                            <span style={{color: '#01c097'}}>Log in</span>
-                                        </Button>
-                                    </>
+                                            <Button type="link" size='large' onClick={this.toLogin}>
+                                                <span style={{color: '#01c097'}}>Log in</span>
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        //show payment fields
+                                        <>
+
+                                            <Title style={3} style={{color: '#000000'}}><span>Settle Payment</span></Title>
+                                            <Form.Item
+                                                name="cardName"
+                                                label='Name on Card'
+                                                rules={[{required: true, message: 'Please input your Name on Card!'}]}
+                                            >
+                                                <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                                                       placeholder="Name on Card"/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="cardNo"
+                                                label='Card Number'
+                                                rules={[{required: true, message: 'Please input your Card No!'}]}
+                                            >
+                                                <Input
+                                                    prefix={<CreditCardOutlined className="site-form-item-icon"/>}
+                                                    placeholder="Card Number"
+                                                />
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="cvv"
+                                                label='CVV'
+                                                rules={[{required: true, message: 'Please input your Card No!'}]}
+                                            >
+                                                <Input
+                                                    prefix={<NumberOutlined className="site-form-item-icon"/>}
+                                                    placeholder="CVV"
+                                                />
+                                            </Form.Item>
+                                            <Form.Item>
+                                                <Button type="primary" onClick={this.settlePayment} className="login-form-button">
+                                                    Do Payment & Register
+                                                </Button>
+                                            </Form.Item>
+                                        </>
+                                    )}
                                 </Form>
                             </Col>
                         </Row>
