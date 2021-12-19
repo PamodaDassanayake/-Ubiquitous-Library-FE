@@ -18,11 +18,14 @@ import MovieList from "../Movies/Admin/Movie-List";
 import * as actions from "../../actions";
 import ViewBookDetails from "../Books/ViewBookDetails";
 import EditBookDetails from "../Books/Admin/EditBookDetails";
+import InventoryBooks from "../Books/Admin/Inventory-books";
 import EditMovieDetails from "../Movies/Admin/EditMovieDetails";
 import ViewMovieDetails from "../Movies/ViewMovieDetails";
 import UserList from "../Users/User-List";
 import UserReservations from "../Reservations/Admin/User-Reservations";
 import UserProfile from "../Users/User-Profile";
+import CsvBooks from "../Books/Admin/Csv-books";
+import RequestedBooks from "../Books/Admin/Requested-books";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -87,6 +90,18 @@ class Dashboard extends React.Component {
                                         <Menu.Item key="2">
                                             <Link to='/dashboard/admin/add-new-book'/>
                                             Add Book
+                                        </Menu.Item>
+                                        <Menu.Item key="3">
+                                            <Link to='/dashboard/admin/inventory'/>
+                                            Inventory
+                                        </Menu.Item>
+                                        <Menu.Item key="4">
+                                            <Link to='/dashboard/admin/csv'/>
+                                            CSV
+                                        </Menu.Item>
+                                        <Menu.Item key="10">
+                                            <Link to='/dashboard/admin/requested'/>
+                                            Requested Books
                                         </Menu.Item>
                                     </SubMenu>
                                     <SubMenu key="movies" icon={<TeamOutlined/>} title="Movies">
@@ -164,6 +179,11 @@ class Dashboard extends React.Component {
                                 <Route exact path='/dashboard/admin/book-list' component={BookList}/>
                                 <Route exact path='/dashboard/admin/editBookDetails/:bookId'
                                        component={EditBookDetails}/>
+                                <Route exact path='/dashboard/admin/inventory' component={InventoryBooks}/>
+                                <Route exact path='/dashboard/admin/csv' component={CsvBooks}/>
+                                <Route exact path='/dashboard/admin/requested' component={RequestedBooks}/>
+                                <Route exact path='/dashboard/admin/csv' component={BookList}/>
+                                <Route exact path='/dashboard/admin/requested' component={BookList}/>
                                 <Route exact path='/dashboard/admin/add-new-movie' component={AddMovie}/>
                                 <Route exact path='/dashboard/admin/movie-list' component={MovieList}/>
                                 <Route exact path='/dashboard/admin/editMovieDetails/:movieId'

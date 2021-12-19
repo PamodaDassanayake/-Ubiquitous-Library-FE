@@ -10,7 +10,18 @@ const initialState = {
     bookSubmitErrorMessage: '',
     bookSubmitSuccess: false,
     bookSubmitLoading: false,
-    comments:[]
+    comments: [],
+
+    googleBooksList: [],
+    requestedBooksList: [],
+
+    requestBookLoading: false,
+    requestBookSuccess: false,
+    requestBookError: false,
+
+    purchaseBookLoading: false,
+    purchaseBookSuccess: false,
+    purchaseBookError: false,
 };
 
 const bookReducer = (state = initialState, action) => {
@@ -28,7 +39,7 @@ const bookReducer = (state = initialState, action) => {
                 bookSubmitErrorMessage: action.payload
             };
         case actionTypes.VIEW_BOOK_LIST:
-            return {...state,   booksList: action.books};
+            return {...state, booksList: action.books};
         case actionTypes.VIEW_BOOK_DETAILS_SUCCESS:
             return {...state, book: action.book};
         case actionTypes.SEARCH_BOOKS:
@@ -39,6 +50,24 @@ const bookReducer = (state = initialState, action) => {
             return {...state, booksList: action.books};
         case actionTypes.VIEW_COMMENTS:
             return {...state, comments: action.comments};
+
+        case actionTypes.SEARCH_GOOGLE_BOOKS:
+            return {...state, googleBooksList: action.googleBooks};
+        case actionTypes.FETCH_REQUESTED_BOOKS:
+            return {...state, requestedBooksList: action.requestedBooks};
+        case actionTypes.REQUEST_GOOGLE_BOOKS:
+            return {...state, requestBookError: false, requestBookLoading: true, requestBookSuccess: false};
+        case actionTypes.REQUEST_GOOGLE_BOOKS_SUCCESS:
+            return {...state, requestBookError: false, requestBookLoading: false, requestBookSuccess: true};
+        case actionTypes.REQUEST_GOOGLE_BOOKS_ERROR:
+            return {...state, requestBookError: true, requestBookLoading: false, requestBookSuccess: false};
+
+        case actionTypes.PURCHASE_BOOKS:
+            return {...state, purchaseBookError: false, purchaseBookLoading: true, purchaseBookSuccess: false};
+        case actionTypes.PURCHASE_BOOKS_SUCCESS:
+            return {...state, purchaseBookError: false, purchaseBookLoading: false, purchaseBookSuccess: true};
+        case actionTypes.PURCHASE_BOOKS_ERROR:
+            return {...state, purchaseBookError: true, purchaseBookLoading: false, purchaseBookSuccess: false};
         default:
             return state;
     }
