@@ -47,4 +47,25 @@ export const getUserDetails = (userId) => {
             console.log(error);
         });
     }
-}
+};
+
+export const blockUser = (login) => {
+    return dispatch => {
+        let url = server_ip + api + `/admin/users/block/${login}`;
+        axios
+            .get(url,{
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.BLOCK_USER
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};

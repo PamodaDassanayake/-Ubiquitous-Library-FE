@@ -1,5 +1,5 @@
 import React from "react";
-import {Table, Typography, Tag, Breadcrumb, Input, Divider, Image} from 'antd';
+import {Table, Typography, Tag, Breadcrumb, Input, Divider, Image, Button, message} from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
 
@@ -8,7 +8,15 @@ const {Text} = Typography;
 
 class UserList extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            blockUserSubmitted: false
+        };
+    };
+
     componentDidMount() {
+        this.props.getUsersList();
         this.props.getUsersList();
     };
 
@@ -49,6 +57,14 @@ class UserList extends React.Component {
             dataIndex: 'image',
             render: (link) => <Image src={link} width={40}/>
         },
+        {
+            title: 'Action',
+            key: 'block',
+            dataIndex: 'block',
+            render: (user) => user.authorities.includes("ROLE_ADMIN") ?
+                <Button type="primary" danger disabled>Block</Button> :
+                <Button type="primary" onClick={() => this.blockUser(user.login)} danger>Block</Button>
+        },
     ];
 
     data = [];
@@ -65,16 +81,34 @@ class UserList extends React.Component {
                         "lastname": row.lastName,
                         "email": row.email,
                         "status": row.activated,
-                        "image": row.imageUrl
+                        "image": row.imageUrl,
+                        "block": row
                     };
                     this.data.push(user);
                 }) : null
+        }
+        if (this.props.userBlockSuccess !== nextProps.userBlockSuccess) {
+            setTimeout(
+                function() {
+                    this.setState({ blockUserSubmitted: false });
+                }
+                    .bind(this),
+                2000
+            );
         }
     };
 
     onSearch = value => console.log(value);
 
+    blockUser = (login) => {
+        this.setState({
+            blockUserSubmitted: true
+        });
+        this.props.blockUser(login);
+    };
+
     render() {
+        const {blockUserSubmitted} = this.state;
         return (
             <>
                 <Breadcrumb style={{margin: '16px 0'}}>
@@ -93,6 +127,8 @@ class UserList extends React.Component {
                 {
                     this.data.length > 0 && <Table columns={this.columns} dataSource={this.data}/>
                 }
+                {blockUserSubmitted && this.props.userBlockSuccess && message.success('User has been blocked successfully!')}
+                {blockUserSubmitted && this.props.userBlockError && message.error('Failed block user!')}
             </>
 
         );
@@ -102,13 +138,18 @@ class UserList extends React.Component {
 const mapStateToProps = state => {
     return {
         account_type: state.auths.account_type,
-        usersList: state.users.usersList
+        usersList: state.users.usersList,
+        userBlockLoading: state.users.userBlockLoading,
+        userBlockSuccess: state.users.userBlockSuccess,
+        userBlockError: state.users.userBlockError,
+        userBlockErrorMessage: state.users.userBlockErrorMessage,
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        getUsersList: () => dispatch(actions.getUsersList())
+        getUsersList: () => dispatch(actions.getUsersList()),
+        blockUser: (login) => dispatch(actions.blockUser(login))
     };
 };
 

@@ -10,6 +10,8 @@ class Reservations extends React.Component {
 
     componentDidMount() {
         this.props.getBooksReservationsByUser();
+        this.props.getBooksReservationsByUser();
+        this.props.getVideosReservationsByUser();
         this.props.getVideosReservationsByUser();
     };
 

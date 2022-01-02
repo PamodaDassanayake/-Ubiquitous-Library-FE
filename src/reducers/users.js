@@ -5,7 +5,11 @@ const initialState = {
     loading: false,
     success: false,
     usersList: [],
-    user: []
+    user: [],
+    userBlockError: false,
+    userBlockErrorMessage: '',
+    userBlockSuccess: false,
+    userBlockLoading: false,
 };
 
 
@@ -15,6 +19,18 @@ const userReducer = (state = initialState, action) => {
             return {...state, user: action.user};
         case actionTypes.VIEW_USERS_LIST:
             return {...state, usersList: action.users};
+        case actionTypes.BLOCK_USER:
+            return {...state, userBlockLoading: true, userBlockSuccess: false, userBlockError: false};
+        case actionTypes.BLOCK_USER_SUCCESS:
+            return {...state, userBlockLoading: false, userBlockSuccess: true, userBlockError: false};
+        case actionTypes.BLOCK_USER_FAIL:
+            return {
+                ...state,
+                userBlockLoading: false,
+                userBlockSuccess: false,
+                userBlockError: true,
+                userBlockErrorMessage: action.payload
+            };
         default:
             return state;
     }
