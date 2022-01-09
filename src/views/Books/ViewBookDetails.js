@@ -115,7 +115,7 @@ class ViewBookDetails extends React.Component {
             "book": bookDetails.id
         };
 
-        if (this.state.fromDate === '' || this.state.toDate === ''){
+        if (this.state.fromDate === '' || this.state.toDate === '') {
             message.error("Please set From date and To date!");
             return;
         }
@@ -195,7 +195,7 @@ class ViewBookDetails extends React.Component {
         this.props.settlePayment(this.props.reserveFee.id, this.props.reserveFee.fee);
     };
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+    componentDidUpdate(nextProps, nextContext) {
         if (this.props.bookAvailability !== nextProps.bookAvailability) {
             // eslint-disable-next-line no-unused-expressions
             this.props.bookAvailability !== null && this.props.bookAvailability.availableQty > 0 ?
@@ -212,23 +212,23 @@ class ViewBookDetails extends React.Component {
                 paymentModalVisible: true
             });
         }
-        if (this.props.paymentSuccess){
+        if (this.props.paymentSuccess) {
             this.setState({
                 paymentModalVisible: false
             });
         }
     };
 
-    disabledDate=(current)=> {
-        let customDate = new Date()-1;
+    disabledDate = (current) => {
+        let customDate = new Date() - 1;
         return current && current < moment(customDate);
     };
 
-    disabledToDate=(current)=>{
+    disabledToDate = (current) => {
         let customDate;
-        if (this.state.fromDate===''){
-            customDate = new Date()-1;
-        }else{
+        if (this.state.fromDate === '') {
+            customDate = new Date() - 1;
+        } else {
             customDate = this.state.fromDate;
         }
         return current && current < moment(customDate);
@@ -366,7 +366,8 @@ class ViewBookDetails extends React.Component {
                                     label='Name on Card'
                                     rules={[{required: true, message: 'Please input your Name on Card!'}]}
                                 >
-                                    <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Name on Card"/>
+                                    <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                                           placeholder="Name on Card"/>
                                 </Form.Item>
                                 <Form.Item
                                     name="cardNo"
@@ -400,10 +401,10 @@ class ViewBookDetails extends React.Component {
                 {
                     this.props.reserveBookError && message.error(this.props.reserveBookErrorMessage.data.message)
                 }
-                {formSubmitted && this.props.paymentSuccess && message.success('Book has been reserved successfully!') &&  this.setState({
+                {formSubmitted && this.props.paymentSuccess && message.success('Book has been reserved successfully!') && this.setState({
                     formSubmitted: false
                 })}
-                {formSubmitted && this.props.paymentError && message.error('Failed to reserved book!') &&  this.setState({
+                {formSubmitted && this.props.paymentError && message.error('Failed to reserved book!') && this.setState({
                     formSubmitted: false
                 })}
             </>
