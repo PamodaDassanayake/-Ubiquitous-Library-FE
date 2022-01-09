@@ -198,7 +198,7 @@ class Dashboard extends React.Component {
                             </Switch>
                         </div>
                     </Content>
-                    <Footer style={{textAlign: 'center'}}>Ubiquitous ©2021 Created by Atom</Footer>
+                    <Footer style={{textAlign: 'center'}}>Ubiquitous ©2021</Footer>
                 </Layout>
             </Layout>
         );
