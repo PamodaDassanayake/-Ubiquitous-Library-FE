@@ -11,7 +11,7 @@ export {
     purchaseBook
 } from "./books";
 export {getMemberships, setAccountType, getAccountType, registerUser, signOut, getLoggedUser} from "./auth";
-export {addMovie, getMoviesList, getMovieDetails, getMovieComments, postMovieComment} from "./movies";
+export {addMovie, getMoviesList, getMovieDetails, getMovieComments, postMovieComment, searchMovies} from "./movies";
 export {getUsersList, blockUser} from "./users";
 export {
     chekBookAvailability,

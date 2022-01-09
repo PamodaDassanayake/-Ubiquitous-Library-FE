@@ -122,3 +122,30 @@ export const postMovieComment = (details) => {
         });
     }
 };
+
+export const searchMovies = (title, author) => {
+    return dispatch => {
+        let url = server_ip + api + `/videos/search`;
+        const params = {
+            title: title,
+            author: author
+        };
+        axios
+            .get(url, {
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+                params
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.SEARCH_MOVIES,
+                        movies: response.data
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};

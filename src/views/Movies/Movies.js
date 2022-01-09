@@ -1,7 +1,9 @@
 import React from "react";
-import {Breadcrumb, Card, Col, Empty, Image, Row, Typography} from 'antd';
+import {Breadcrumb, Card, Col, Divider, Empty, Image, Input, Row, Typography} from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
+
+const {Search} = Input;
 
 const {Text} = Typography;
 
@@ -16,6 +18,17 @@ class Movies extends React.Component {
         this.props.getMoviesList();
     };
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(this.props.moviesList)
+    }
+
+    onSearch = (value) => {
+        this.setState({
+            searchBooks: true
+        });
+        this.props.searchMovies(value, '');
+    };
+
     render() {
         return (
             <>
@@ -23,10 +36,19 @@ class Movies extends React.Component {
                     <Breadcrumb.Item>Library</Breadcrumb.Item>
                     <Breadcrumb.Item>Movies</Breadcrumb.Item>
                 </Breadcrumb>
+                <Search
+                    placeholder="Search book here..."
+                    allowClear
+                    enterButton="Search"
+                    size="large"
+                    style={{width: 800}}
+                    onSearch={this.onSearch}
+                />
+                <Divider type='horizontal'/>
                 <div className="site-card-wrapper">
                     <Row gutter={[16, 24]}>
                         {
-                            this.props.moviesList.length !== 0 ?
+                            this.props.moviesList !== undefined && this.props.moviesList.length !== 0 ?
                                 this.props.moviesList.map((row, index) => (
                                     <Col span={6} key={index}>
                                         <Card
@@ -40,8 +62,8 @@ class Movies extends React.Component {
                                             <p>{row.publishYear}</p>
                                         </Card>
                                     </Col>
-                                )) :      <div style={{margin: 'auto'}}>
-                                    <Empty />
+                                )) : <div style={{margin: 'auto'}}>
+                                    <Empty/>
                                 </div>
                         }
                     </Row>
@@ -60,7 +82,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getMoviesList: () => dispatch(actions.getMoviesList())
+        getMoviesList: () => dispatch(actions.getMoviesList()),
+        searchMovies: (title, author) => dispatch(actions.searchMovies(title, author)),
     };
 };
 

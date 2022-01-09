@@ -34,6 +34,8 @@ const movieReducer = (state = initialState, action) => {
             return {...state, moviesList: action.movies};
         case actionTypes.VIEW_COMMENTS:
             return {...state, comments: action.comments};
+        case actionTypes.SEARCH_MOVIES:
+            return {...state, moviesList: action.movies};
         default:
             return state;
     }
