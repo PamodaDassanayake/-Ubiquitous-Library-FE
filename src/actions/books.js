@@ -88,9 +88,9 @@ export const searchBooks = (title, author) => {
         };
         axios
             .get(url, {
-                headers: {
-                    'Authorization': `Basic ${getToken()}`
-                },
+                // headers: {
+                //     'Authorization': `Basic ${getToken()}`
+                // },
                 params
             })
             .then(response => {
