@@ -17,6 +17,7 @@ class BookList extends React.Component {
 
     componentDidMount() {
         this.props.getBooksList();
+        this.props.getBooksList();
     };
 
     editDetails = (id) => {

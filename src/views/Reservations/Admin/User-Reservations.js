@@ -9,6 +9,8 @@ const {TabPane} = Tabs;
 class UserReservations extends React.Component {
     componentDidMount() {
         this.props.getAdminBookReservations();
+        this.props.getAdminBookReservations();
+        this.props.getAdminVideoReservations();
         this.props.getAdminVideoReservations();
     };
 
@@ -170,10 +172,10 @@ class UserReservations extends React.Component {
                 </Breadcrumb>
                 <Tabs type="card">
                     <TabPane tab="Books List" key="1">
-                        {movies}
+                        {books}
                     </TabPane>
                     <TabPane tab="Movies List" key="2">
-                        {books}
+                        {movies}
                     </TabPane>
                 </Tabs>
             </>

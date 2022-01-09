@@ -8,6 +8,7 @@ const {Search} = Input;
 class MovieList extends React.Component {
     componentDidMount() {
         this.props.getMoviesList();
+        this.props.getMoviesList();
     };
 
 

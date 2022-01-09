@@ -105,11 +105,11 @@ class Dashboard extends React.Component {
                                         </Menu.Item>
                                     </SubMenu>
                                     <SubMenu key="movies" icon={<TeamOutlined/>} title="Movies">
-                                        <Menu.Item key="3">
+                                        <Menu.Item key="221">
                                             <Link to='/dashboard/admin/movie-list'/>
                                             Movie List
                                         </Menu.Item>
-                                        <Menu.Item key="4">
+                                        <Menu.Item key="323">
                                             <Link to='/dashboard/admin/add-new-movie'/>
                                             Add Movie
                                         </Menu.Item>
