@@ -49,7 +49,7 @@ class UserList extends React.Component {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (status) =>  status ? <Tag color="success">Activated</Tag> : <Tag color="error">Deactivated</Tag>
+            render: (status) => status ? <Tag color="success">Activated</Tag> : <Tag color="error">Deactivated</Tag>
         },
         {
             title: 'Image',
@@ -63,7 +63,9 @@ class UserList extends React.Component {
             dataIndex: 'block',
             render: (user) => user.authorities.includes("ROLE_ADMIN") ?
                 <Button type="primary" danger disabled>Block</Button> :
-                <Button type="primary" onClick={() => this.blockUser(user.login)} danger>Block</Button>
+                user.activated ?
+                    <Button type="primary" onClick={() => this.blockUser(user.login)} danger>Block</Button> :
+                    <Button type="primary" onClick={() => this.activeUser(user.login)}>Active</Button>
         },
     ];
 
@@ -77,7 +79,7 @@ class UserList extends React.Component {
                     const user = {
                         "key": index + 1,
                         "id": index + 1,
-                        "firstname":row.firstName,
+                        "firstname": row.firstName,
                         "lastname": row.lastName,
                         "email": row.email,
                         "status": row.activated,
@@ -89,8 +91,8 @@ class UserList extends React.Component {
         }
         if (this.props.userBlockSuccess !== nextProps.userBlockSuccess) {
             setTimeout(
-                function() {
-                    this.setState({ blockUserSubmitted: false });
+                function () {
+                    this.setState({blockUserSubmitted: false});
                 }
                     .bind(this),
                 2000
@@ -98,13 +100,18 @@ class UserList extends React.Component {
         }
     };
 
-    onSearch = value => console.log(value);
-
     blockUser = (login) => {
         this.setState({
             blockUserSubmitted: true
         });
         this.props.blockUser(login);
+    };
+
+    activeUser = (login) => {
+        this.setState({
+            blockUserSubmitted: true
+        });
+        this.props.activeUser(login);
     };
 
     render() {
@@ -115,19 +122,10 @@ class UserList extends React.Component {
                     <Breadcrumb.Item>Library</Breadcrumb.Item>
                     <Breadcrumb.Item>User List</Breadcrumb.Item>
                 </Breadcrumb>
-                <Search
-                    placeholder="Search users here..."
-                    allowClear
-                    enterButton="Search"
-                    size="large"
-                    style={{width: 800}}
-                    onSearch={this.onSearch}
-                />
-                <Divider type='horizontal'/>
                 {
                     this.data.length > 0 && <Table columns={this.columns} dataSource={this.data}/>
                 }
-                {blockUserSubmitted && this.props.userBlockSuccess && message.success('User has been blocked successfully!')}
+                {blockUserSubmitted && this.props.userBlockSuccess ? message.success('User has been blocked successfully!') : null}
                 {blockUserSubmitted && this.props.userBlockError && message.error('Failed block user!')}
             </>
 
@@ -149,7 +147,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         getUsersList: () => dispatch(actions.getUsersList()),
-        blockUser: (login) => dispatch(actions.blockUser(login))
+        blockUser: (login) => dispatch(actions.blockUser(login)),
+        activeUser: (login) => dispatch(actions.activeUser(login)),
     };
 };
 

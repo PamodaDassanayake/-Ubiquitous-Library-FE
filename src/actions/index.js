@@ -12,7 +12,7 @@ export {
 } from "./books";
 export {getMemberships, setAccountType, getAccountType, registerUser, signOut, getLoggedUser} from "./auth";
 export {addMovie, getMoviesList, getMovieDetails, getMovieComments, postMovieComment, searchMovies} from "./movies";
-export {getUsersList, blockUser} from "./users";
+export {getUsersList, blockUser, activeUser} from "./users";
 export {
     chekBookAvailability,
     reserveBook,

@@ -59,8 +59,10 @@ class MovieList extends React.Component {
 
     data = [];
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+    componentDidUpdate(nextProps, nextContext) {
         if (this.props.moviesList !== nextProps.moviesList) {
+            this.data = [];
+
             // eslint-disable-next-line no-unused-expressions
             this.props.moviesList.length > 0 ?
                 this.props.moviesList.map((row, index) => {
@@ -79,7 +81,9 @@ class MovieList extends React.Component {
         }
     };
 
-    onSearch = value => console.log(value);
+    onSearch = (value) => {
+        this.props.searchMovies(value, '');
+    };
 
     render() {
         return (
@@ -115,7 +119,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getMoviesList: () => dispatch(actions.getMoviesList())
+        getMoviesList: () => dispatch(actions.getMoviesList()),
+        searchMovies: (title, author) => dispatch(actions.searchMovies(title, author))
     };
 };
 

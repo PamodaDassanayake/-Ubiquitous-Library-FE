@@ -51,9 +51,9 @@ export const getUserDetails = (userId) => {
 
 export const blockUser = (login) => {
     return dispatch => {
-        let url = server_ip + api + `/admin/users/block/${login}`;
+        let url = server_ip + api + `/admin/users/deactivate/${login}`;
         axios
-            .get(url,{
+            .put(url,'',{
                 headers: {
                     'Authorization': `Basic ${getToken()}`
                 },
@@ -69,3 +69,25 @@ export const blockUser = (login) => {
         });
     }
 };
+
+export const activeUser = (login) => {
+    return dispatch => {
+        let url = server_ip + api + `/admin/users/activate/${login}`;
+        axios
+            .put(url,'',{
+                headers: {
+                    'Authorization': `Basic ${getToken()}`
+                },
+            })
+            .then(response => {
+                dispatch(
+                    {
+                        type: actionTypes.BLOCK_USER
+                    }
+                );
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+};
+
