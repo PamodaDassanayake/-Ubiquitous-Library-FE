@@ -207,6 +207,10 @@ class ViewBookDetails extends React.Component {
                     availability: false
                 });
         }
+
+    };
+
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.props.reserveBookSuccess !== nextProps.reserveBookSuccess) {
             this.setState({
                 paymentModalVisible: true
@@ -217,7 +221,7 @@ class ViewBookDetails extends React.Component {
                 paymentModalVisible: false
             });
         }
-    };
+    }
 
     disabledDate = (current) => {
         let customDate = new Date() - 1;
