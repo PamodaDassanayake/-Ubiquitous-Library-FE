@@ -113,7 +113,9 @@ class CsvBooks extends React.Component {
                     <Breadcrumb.Item>CSV List</Breadcrumb.Item>
                 </Breadcrumb>
                 <Divider type='horizontal'/>
-                <Table columns={this.columns} dataSource={this.data}/>
+                {
+                    this.data.length > 0 ?  <Table columns={this.columns} dataSource={this.data}/> : null
+                }
             </>
         );
     }

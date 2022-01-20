@@ -69,12 +69,12 @@ class InventoryBooks extends React.Component {
     data = [];
 
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        if (this.props.booksList !== nextProps.booksList) {
+        if (this.props.scrap !== nextProps.scrap) {
 
             this.data = [];
             // eslint-disable-next-line no-unused-expressions
-            this.props.booksList.length > 0 ?
-                this.props.booksList.map((row, index) => {
+            this.props.scrap.length > 0 ?
+                this.props.scrap.map((row, index) => {
                     const book = {
                         "key": index + 1,
                         "id": row.id,
@@ -92,7 +92,7 @@ class InventoryBooks extends React.Component {
     };
 
     startScrap = () => {
-        if (this.props.scrapStatus === 'Running'){
+        if (this.props.scrapStatus === 'Running') {
             message.warn('Previous scrapping service is still running!');
             return;
         }
@@ -118,15 +118,18 @@ class InventoryBooks extends React.Component {
                         Scrape Inventory
                     </Button>
                     <Button type="primary" key="console" onClick={this.refreshScrape}>
-                       Check Status
+                        Check Status
                     </Button>
                 </Space>
                 <Divider type='horizontal'/>
-                <Table columns={this.columns} dataSource={this.data}/>
+                {
+                    this.data.length > 0 ? <Table columns={this.columns} dataSource={this.data}/> : null
+                }
             </>
 
         );
     }
+
 }
 
 const mapStateToProps = state => {
@@ -137,12 +140,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        startScrapList: () => dispatch(actions.startScrap()),
-        getScrapStatus: () => dispatch(actions.getScrapStatus()),
-        getScrap: () => dispatch(actions.getScrapResources()),
-    };
-};
+        return {
+            startScrapList: () => dispatch(actions.startScrap()),
+            getScrapStatus: () => dispatch(actions.getScrapStatus()),
+            getScrap: () => dispatch(actions.getScrapResources()),
+        };
+    }
+;
 
 export default connect(
     mapStateToProps,
