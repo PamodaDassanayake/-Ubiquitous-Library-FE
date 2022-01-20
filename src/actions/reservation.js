@@ -33,6 +33,9 @@ export const reserveBook = (data) => {
         dispatch(
             {
                 type: actionTypes.RESERVE_BOOK
+            },
+            {
+                type: actionTypes.PAYMENT
             }
         );
         axios
@@ -47,6 +50,9 @@ export const reserveBook = (data) => {
                     {
                         type: actionTypes.RESERVE_BOOK_SUCCESS,
                         reserveFee: response.data
+                    },
+                    {
+                        type: actionTypes.PAYMENT_SUCCESS
                     }
                 );
             }).catch(error => {
@@ -55,6 +61,9 @@ export const reserveBook = (data) => {
                 {
                     type: actionTypes.RESERVE_BOOK_FAIL,
                     payload: error.response
+                },
+                {
+                    type: actionTypes.PAYMENT_FAIL
                 }
             );
         });

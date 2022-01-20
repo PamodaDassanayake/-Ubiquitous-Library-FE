@@ -8,11 +8,12 @@ import {
     Typography,
     Row,
     Button,
-    Divider, message, Comment, Avatar, List, Form, Tooltip, Input
+    Divider, message, Comment, Avatar, List, Form, Tooltip, Input, Modal
 } from 'antd';
 import * as actions from "../../actions";
 import {connect} from "react-redux";
 import moment from "moment";
+import {CreditCardOutlined, NumberOutlined, UserOutlined} from "@ant-design/icons";
 
 const {Title, Text} = Typography;
 const {TextArea} = Input;
@@ -75,7 +76,8 @@ class ViewMovieDetails extends React.Component {
             formSubmitted: false,
             comments: [],
             submitting: false,
-            value: ''
+            value: '',
+            paymentModalVisible: false
         };
     };
 
@@ -168,6 +170,13 @@ class ViewMovieDetails extends React.Component {
         });
     };
 
+
+    hideModal = () => {
+        this.setState({
+            paymentModalVisible: false,
+        });
+    };
+
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (this.props.bookAvailability !== nextProps.bookAvailability) {
             // eslint-disable-next-line no-unused-expressions
@@ -180,7 +189,30 @@ class ViewMovieDetails extends React.Component {
                     availability: false
                 })
         }
+
+        if (this.props.reserveBookSuccess !== nextProps.reserveBookSuccess){
+            this.setState({
+                paymentModalVisible: true
+            });
+        }
+
+        if (this.props.paymentSuccess !== nextProps.paymentSuccess){
+            this.setState({
+
+                paymentModalVisible: false
+            });
+            setTimeout(() => {
+              this.setState({
+                  formSubmitted: false
+              });
+            }, 2000);
+        }
+
     };
+    submitPayment = () => {
+        this.props.settlePayment(this.props.reserveFee.id, this.props.reserveFee.fee);
+    };
+
 
     render() {
         const {availability, formSubmitted, comments, submitting, value} = this.state;
@@ -260,8 +292,67 @@ class ViewMovieDetails extends React.Component {
                         ) : <p>Loading...</p>
                     }
                 </Row>
-                {formSubmitted && this.props.reserveBookSuccess && message.success('Video has been reserved successfully!')}
-                {formSubmitted && this.props.reserveBookError && message.error('Failed to reserved video!')}
+                {
+                    this.props.reserveFee !== null &&
+                    (
+                        <Modal
+                            title="Payment"
+                            width={600}
+                            visible={this.state.paymentModalVisible}
+
+                            okButtonProps={{hidden: true}}
+                            cancelButtonProps={{hidden: this.state.current !== 0}}
+                        >
+                            <Form
+                                initialValues={{remember: true}}
+                                onFinish={this.submitPayment}
+                                style={{width: '500px', margin: 'auto'}}
+                                layout='vertical'
+                            >
+                                <Form.Item
+                                    name="fee"
+                                >
+                                    <h2>Fee : Rs. {this.props.reserveFee.fee}</h2>
+                                </Form.Item>
+                                <Form.Item
+                                    name="cardName"
+                                    label='Name on Card'
+                                    rules={[{required: true, message: 'Please input your Name on Card!'}]}
+                                >
+                                    <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                                           placeholder="Name on Card"/>
+                                </Form.Item>
+                                <Form.Item
+                                    name="cardNo"
+                                    label='Card Number'
+                                    rules={[{required: true, message: 'Please input your Card No!'}]}
+                                >
+                                    <Input
+                                        prefix={<CreditCardOutlined className="site-form-item-icon"/>}
+                                        placeholder="Card Number"
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    name="cvv"
+                                    label='CVV'
+                                    rules={[{required: true, message: 'Please input your Card No!'}]}
+                                >
+                                    <Input
+                                        prefix={<NumberOutlined className="site-form-item-icon"/>}
+                                        placeholder="CVV"
+                                    />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit" className="login-form-button">
+                                        PAY RS. {this.props.reserveFee.fee}.00
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Modal>
+                    )
+                }
+                {formSubmitted && this.props.reserveBookSuccess && this.props.paymentSuccess && message.success('Video has been reserved successfully!')}
+                {formSubmitted && this.props.paymentError && message.error('Failed to reserved video!')}
             </>
         );
     }
@@ -278,6 +369,11 @@ const mapStateToProps = state => {
         reserveBookError: state.reservations.reserveBookError,
         reserveBookErrorMessage: state.reservations.reserveBookErrorMessage,
         comments: state.movies.comments,
+        reserveFee: state.reservations.reserveFee,
+        paymentLoading: state.reservations.paymentLoading,
+        paymentSuccess: state.reservations.paymentSuccess,
+        paymentError: state.reservations.paymentError,
+        paymentErrorMessage: state.reservations.paymentErrorMessage
     };
 };
 
@@ -288,7 +384,8 @@ const mapDispatchToProps = dispatch => {
         chekBookAvailability: (data) => dispatch(actions.chekBookAvailability(data)),
         reserveBook: (data) => dispatch(actions.reserveBook(data)),
         getCommentsForMovie: (bookId) => dispatch(actions.getMovieComments(bookId)),
-        postMovieComment: (details) => dispatch(actions.postMovieComment(details))
+        postMovieComment: (details) => dispatch(actions.postMovieComment(details)),
+        settlePayment: (reserveId, fee) => dispatch(actions.settleBookPayment(reserveId, fee)),
     };
 };
 

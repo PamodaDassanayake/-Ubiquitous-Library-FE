@@ -52,6 +52,11 @@ export const getUserDetails = (userId) => {
 export const blockUser = (login) => {
     return dispatch => {
         let url = server_ip + api + `/admin/users/deactivate/${login}`;
+        dispatch(
+            {
+                type: actionTypes.BLOCK_USER
+            }
+        );
         axios
             .put(url,'',{
                 headers: {
@@ -61,10 +66,15 @@ export const blockUser = (login) => {
             .then(response => {
                 dispatch(
                     {
-                        type: actionTypes.BLOCK_USER
+                        type: actionTypes.BLOCK_USER_SUCCESS
                     }
                 );
             }).catch(error => {
+            dispatch(
+                {
+                    type: actionTypes.BLOCK_USER_FAIL
+                }
+            );
             console.log(error);
         });
     }
