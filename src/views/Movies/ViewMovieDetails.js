@@ -385,7 +385,7 @@ const mapDispatchToProps = dispatch => {
         reserveBook: (data) => dispatch(actions.reserveBook(data)),
         getCommentsForMovie: (bookId) => dispatch(actions.getMovieComments(bookId)),
         postMovieComment: (details) => dispatch(actions.postMovieComment(details)),
-        settlePayment: (reserveId, fee) => dispatch(actions.settleBookPayment(reserveId, fee)),
+        settlePayment: (reserveId, fee) => dispatch(actions.settleMoviePayment(reserveId, fee)),
     };
 };
 

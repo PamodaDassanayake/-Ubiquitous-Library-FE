@@ -196,7 +196,7 @@ export const settleBookPayment = (reserveId, fee) => {
 
 export const settleMoviePayment = (reserveId, fee) => {
     return dispatch => {
-        let url = server_ip + api + `/library/pay/movie/${reserveId}/${fee}`;
+        let url = server_ip + api + `/library/pay/video/${reserveId}/${fee}`;
         dispatch(
             {
                 type: actionTypes.PAYMENT
