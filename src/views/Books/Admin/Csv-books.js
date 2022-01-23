@@ -131,7 +131,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         loadCsv: () => dispatch(actions.loadCsv()),
-        updateInventory: () => dispatch(actions.saveCsv()),
+        updateInventory: (array) => dispatch(actions.saveCsv(array)),
     };
 };
 
